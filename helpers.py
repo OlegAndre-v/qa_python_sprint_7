@@ -1,10 +1,12 @@
 import requests
+import allure
 import random
 import string
 import json
 from data import Url, OrderTestData
 
 
+@allure.step('Регистрируем нового курьера и возвращаем логопасс')
 def register_new_courier_and_return_login_password():
 
     login_pass = {}
@@ -33,12 +35,14 @@ def register_new_courier_and_return_login_password():
     return login_pass
 
 
+@allure.step('Генерируем рандомную строку')
 def generate_random_string(length):
     letters = string.ascii_lowercase
     random_string = ''.join(random.choice(letters) for i in range(length))
     return random_string
 
 
+@allure.step('Логинимся курьером')
 def courier_login(login, password):
     payload = {
         'login': login,
@@ -48,11 +52,13 @@ def courier_login(login, password):
     return response
 
 
+@allure.step('Удаляем курьера')
 def courier_delete(courier_id):
     response = requests.delete(f'{Url.BASE_URL}{Url.CREATE_COURIER_HANDLE}/{courier_id}')
     return response
 
 
+@allure.step('Создаем заказ')
 def order_create(color):
     OrderTestData.ORDER['color'] = color
     payload = OrderTestData.ORDER
@@ -60,6 +66,7 @@ def order_create(color):
     return response
 
 
+@allure.step('Получаем id заказов')
 def get_orders_ids():
     response = requests.get(Url.BASE_URL + Url.ORDERS_HANDLE)
     response_data = json.loads(response.text)
@@ -67,6 +74,7 @@ def get_orders_ids():
     return order_ids
 
 
+@allure.step('Получаем трек номера заказов')
 def get_orders_numbers():
     response = requests.get(Url.BASE_URL + Url.ORDERS_HANDLE)
     response_data = json.loads(response.text)
